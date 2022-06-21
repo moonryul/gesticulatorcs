@@ -1,0 +1,45 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        
+        // the following debug configuration assumes that you use "python -m debugpy --listen 5678 --wait-for-client ./myscript.py" in the terminal
+        {
+            "name": "Python: Attach",
+            "type": "python",
+            "request": "attach",
+            "connect": {
+                "host": "localhost",
+                "port": 5678
+            }
+        },
+        {
+            "name": "Python: Current File (reltative to the current folder)",
+            "type": "python",
+            "request": "launch",
+            // launch vs attach:
+            // When you open DevTools, you are simply attaching DevTools to your open browser tab.
+            //  On the other hand, if you come from a server or desktop background, 
+            // it's quite normal to have your editor launch your process for you, 
+            // and your editor automatically attaches its debugger to the newly launched process.
+            //"python": "C:/Users/moon/anaconda3/envs/gest_env/python.exe",
+            "program": "${file}",
+            "justMyCode": false,
+            // args - arguments passed to the program to debug
+            "cwd": "${fileDirname}", // ${fileDirname} is the "current folder" in which the python file to be executed (${file}) is opened.
+            // "console": "externalTerminal",
+            "console": "integratedTerminal", // internalConsole, integratedTerminal, or externalTerminal
+        },
+        {
+            "name": "Python: Current File (relative to WorkingSpaceFolde)r",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

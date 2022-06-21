@@ -1,0 +1,83 @@
+# For detailed information regarding these parameters, see 'model_config.py'
+# The values here are the same as the defaults in the code
+
+# ---- Data directories ----
+data_dir:   '../dataset/processed_data'
+result_dir: '../results'
+run_name:   'last_run'
+# generated_prediction_dir: # defaults to <result_dir>/<run_name>/generated_gestures/
+# saved_models_dir:         # defaults to <result_dir>/<run_name>/models
+
+# ---- Data processing parameters ----
+
+# MJ: Each training sequence contains 70 consecutive frames from a larger recording. 
+# The first 10 and the last 20 frames establish context for the sliding window, while
+# the 40 central frames are used for training
+sequence_length: 40 # The length of each training sequence : 10 + 10 + 20 = 40
+past_context: 10 # The number of past speech frames to use as context during prediction
+future_context: 20 # The number of future speech frames to use as context during prediction
+
+text_context: 10 # The number of future text frames to use for generating gestures
+
+# ---- Network architecture ----
+text_embedding: 'BERT'
+activation: 'TanH'
+n_layers: 1
+first_l_sz: 256
+second_l_sz: 512
+third_l_sz: 384
+n_prev_poses: 3 # For autoregression
+
+
+# MJ: Each training sequence contains 70 consecutive frames from a larger recording. 
+# The first 10 and  the last 20 frames establish context for the sliding window, 
+# while  the 40 central frames are used for training. 
+
+# MJ: the text and # audio FEATURES of EACH FRAME are jointly encoded by a feed-forward
+# neural network to reduce dimensionality. To provide more input
+# context for predicting the current frame, we pass a sliding window
+# spanning 0.5 s (10 frames) of past speech and 1 s (20 frames) of
+# future speech features over the encoded feature vectors. These time
+# spans are grounded in research on gesture-speech alignment, as
+# reviewed in Sec. 2.1.2. The encodings inside the context window
+# are concatenated into a long vector and passed through several
+# fully-connected layers. 
+
+
+
+
+# MJ: Speech-encoding dimensionality 124 at each of 30 frames, producing 3720 (= 124 x 30) elements after concatenation.
+
+# MJ: self.reduce_speech_enc = nn.Sequential(nn.Linear(int(args.speech_enc_frame_dim * \
+#                                                         (args.past_context + args.future_context)),
+#                                                          args.full_speech_enc_dim),
+#                                                self.activation, nn.Dropout(args.dropout))
+# =  nn.Sequential(  nn.Linear( 124 * (10 + 20), 612), 
+#                   self.activation, nn.Dropout(args.dropout)
+#   ): 3720 => 612
+
+
+speech_enc_frame_dim: 124
+full_speech_enc_dim: 612
+
+# ---- Training parameters ----
+batch_size: 64
+learning_rate: 0.0001
+# The training loss is MSE(motion_pred, motion_orig) + vel_coef * MSE(velocity_pred, velocity_orig)
+vel_coef: 0.6 
+dropout: 0.2
+dropout_multiplier: 4.0 # The dropout is multiplied by this factor in the conditioning layer
+n_epochs_with_no_autoregression: 7
+
+# ---- Parameters for saving model predictions ----
+save_val_predictions_every_n_epoch: 1 # Disabled by default
+save_train_predictions_every_n_epoch: 0 # Disabled by default
+saved_prediction_duration_sec: 9
+prediction_save_formats: ["video", "3d_coordinates", "raw_gesture"] # Can be "bvh_file" as well
+
+# ---- Binary flags ---- 
+use_pca: False
+use_recurrent_speech_enc: False
+no_overwrite_warning: False
+# If 'no_overwrite_warning' is set, and the given <run_name> directory
+# already exists, it will be cleared without displaying any warnings
