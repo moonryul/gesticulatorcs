@@ -49,7 +49,7 @@ class GesturePredictor:
 
         self.embedding = self._create_embedding(model.text_dim)
         
-    def predict_gestures(self, audio, text, audio_type):
+    def predict_gestures(self, audio, text, audio_type, sample_rate):
         """ Predict the gesticulation for the given audio and text inputs.
         Args:
             audioh:  the path to the audio input or np-array of audio
@@ -64,7 +64,7 @@ class GesturePredictor:
         text_type = self._get_text_input_type(text)
         
         #audio, text = self._extract_features(audio_path, text, text_type)
-        audio, text = self._extract_features(audio, text, audio_type, text_type)
+        audio, text = self._extract_features(audio, text, audio_type, text_type, sample_rate)
         audio, text = self._add_feature_padding(audio, text)
         # Add batch dimension
         audio, text = audio.unsqueeze(0), text.unsqueeze(0)
@@ -74,6 +74,8 @@ class GesturePredictor:
         return predicted_motion
 
         
+   
+
     # -------- Private methods --------
 
     def _create_embedding(self, text_dim):
@@ -152,7 +154,7 @@ class GesturePredictor:
         return text
     
     #def _extract_features(self, audio_in, text_in, text_type):
-    def _extract_features(self, audio_in, text_in, audio_type, text_type):
+    def _extract_features(self, audio_in, text_in, audio_type, text_type, sample_rate):
         """
         Extract the features for the given input. 
         
@@ -161,7 +163,7 @@ class GesturePredictor:
             text_in:  the speech as text (if estimate_word_timings is True)
                       or the path to the JSON transcription (if estimate_word_timings is False)
         """
-        audio_features = self._extract_audio_features(audio_in, audio_type)
+        audio_features = self._extract_audio_features(audio_in, audio_type,sample_rate)
         #audio_features = self._extract_audio_features_from_array(audio_in)
         text_features = self._extract_text_features(text_in, text_type, audio_features.shape[0])
         # Align the vector lengths
@@ -171,7 +173,7 @@ class GesturePredictor:
 
         return audio, text
 
-    def _extract_audio_features(self, audio_path, audio_type):
+    def _extract_audio_features(self, audio_path, audio_type, sample_rate):
 
         if self.feature_type == "MFCC":
             return tools.calculate_mfcc(audio_path)
@@ -187,9 +189,11 @@ class GesturePredictor:
         
         if self.feature_type =="Spectro":
             if audio_type == "array":
-               return tools.calculate_spectrogram_from_array(audio_path)
-            else: # audio_type == "file"
+               return tools.calculate_spectrogram_from_array(audio_path, sample_rate)
+            elif audio_type == "file":
                return tools.calculate_spectrogram(audio_path)
+            else:
+                  print(f"ERROR: unknown audo type '{audio_type}' in the 'extract_audio_features' call!")   
         
         if self.feature_type == "Spectro+Pros":
             spectr_vectors = tools.calculate_spectrogram(audio_path)

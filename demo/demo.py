@@ -62,7 +62,8 @@ def  main():
     # 2. Predict the gestures with the loaded model
 
     audio_type ="file"
-    motion = gp.predict_gestures(args.audio, args.text, audio_type) # motion is a tensor: args.text is either a file path or a string itself
+    sample_rate = -1 # if audio_type is "file", sample_rate is read from the file itself.
+    motion = gp.predict_gestures(args.audio, args.text, audio_type, sample_rate) # motion is a tensor: args.text is either a file path or a string itself
 
   
     # 3. Visualize the results

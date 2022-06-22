@@ -117,7 +117,7 @@ def calculate_spectrogram(audio_filename):
     DIM = 64  # The number of frequency bins
 
    # Use native sample rate =>audio, sample_rate = librosa.load(audio_filename, sr=None) # sample_rate = 22080 discrete values  per second; 0.1 s = 1 frame => 2208 discrete time points per frame
-    # use the default rate of 22080:
+    # use the default rate of 22050:
     audio, sample_rate = librosa.load(audio_filename)
     # Make stereo audio being mono
     if len(audio.shape) == 2:
@@ -135,11 +135,13 @@ def calculate_spectrogram(audio_filename):
     return np.transpose(log_spectr)
 
 
-def calculate_spectrogram_from_array(audio, sample_rate=22080):
+#def calculate_spectrogram_from_array(audio, sample_rate=22050):
+    
+def calculate_spectrogram_from_array(audio, sample_rate):
     """ Calculate spectrogram for the audio file
     Args:
         audio: np.array of sound data
-        sample_rate: sample_rate = 22080 discrete values  per second
+        sample_rate: sample_rate = 22050 discrete values  per second
         
     Returns:
         log spectrogram values

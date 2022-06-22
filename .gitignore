@@ -9,6 +9,10 @@
 /gesticulator/esticulator.egg-info/*
 **/__pycache__/*
 
+
+#https://kbroman.org/github_tutorial/pages/init.html
+#https://kbroman.org/github_tutorial/pages/first_time.html
+
 # The .git directory is the repository; the directory it lives in on your local machine is 
 # just the root directory of the tree object associated with the commit you checked out. 
 # You don't push .git because push already copies everything necessary from your local repo to the remote.

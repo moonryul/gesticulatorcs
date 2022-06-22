@@ -31,7 +31,7 @@ from gesticulator.visualization.motion_visualizer.generate_videos import visuali
 #     subprocess.check_call([sys.executable] + cmd.split())''
 
 
-def  main(args_audio, args_text):
+def  main(args_audio, args_text, sample_rate):
 #def main(args):
     # 0. Check feature type based on the model
 
@@ -63,7 +63,7 @@ def  main(args_audio, args_text):
     # motion = gp.predict_gestures(args.audio, args.text) # motion is a tensor: args.text is either a file path or a **string itself**
     audio_type ="array"
     
-    motion = gp.predict_gestures(args_audio, args_text, audio_type) #
+    motion = gp.predict_gestures(args_audio, args_text, audio_type, sample_rate )#
     # 3. Visualize the results
     motion_length_sec = int(motion.shape[1] / 20)
 
